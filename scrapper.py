@@ -78,15 +78,3 @@ class Scrapper:
 
     def close(self):
         self.driver.close()
-
-
-def main():
-    scrapper = Scrapper(
-        # True
-    )
-    scrapper.get_all_products()
-    # scrapper.close()
-
-
-if __name__ == "__main__":
-    main()

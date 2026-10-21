@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        body, html {
+            min-width: 100vh;
+            font-family: Courier New, ui-serif, system-ui, sans-serif;
+        }
+
+        body {
+            background: #000000;
+            color: #ffffff;
+        }
+
+        .d {
+            background: #3a3e41;
+        }
+
+        header {
+            padding: 0.5em 1em;
+            font-weight: bold;
+            font-size: 17px;
+            border-bottom: 1px #3a3e41 solid;
+        }
+
+        main {
+            margin-top: 3em;
+            padding: 0.5em 1em;
+            counter-reset: line-counter;
+        }
+
+        .line {
+            display: flex;
+            line-height: 2.5rem;
+            font-size: 1.3rem;
+        }
+
+        .line::before {
+            counter-increment: line-counter;
+            content: counter(line-counter);
+            min-width: 2.5rem;
+            font-weight: bold;
+            color: #e5f2ff78;
+        }
+
+        .line h3 {
+            color: #e5f2ff78;
+        }
+
+        .line .white {
+            color: white;
+        }
+    
+        .line a {
+            color: orange;
+        }
+
+        .line select {
+            background: transparent;
+            min-width: 30em;
+            color: white;
+            font-family: Courier New, ui-serif, system-ui, sans-serif;
+        }
+
+        .line select>option {
+            background-color: black;
+            color: #e5f2ff78;
+        }
+
+        .send-btn {
+            color: white;
+            cursor: pointer;
+        }
+
+        .send-btn:hover {
+            color: orange;
+        }
+    </style>
+    <body>
+        <header>trash_scrape.py</header>
+        <main>
+            <div class="line">
+                <h3># A Scrapper of 
+                    <a target="_blank" href="https://scrapingsandbox.com/">https://scrapingsandbox.com/</a>
+                </h3>
+            </div>
+            <div class="line">
+                <h3># Search for Products</h3>
+            </div>
+            <div class="line">
+                <h3 class="white">Category: </h3>
+            </div>
+            <div class="line">
+                <form>
+                    <select id="category">
+                        <option>All Categories</option>
+                        {% for cat in categories %}
+                            <option value="{{ cat }}">{{ cat }}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+            <div class="line">
+                <div class="send-btn" onclick="loadEquipments()">
+                    > send<span id="ret"></span>
+                </div>
+            </div>
+            <div id="list-container"></div>
+        </main>
+    </body>
+    <script>
+        function animateRet () {
+            const ret = document.getElementById("ret");
+            if (ret.innerText === "...") {
+                ret.innerText = "";
+            } else {
+                ret.innerText += ".";
+            }
+            setTimeout(animateRet, 500);
+        }
+        animateRet();
+
+        async function loadEquipments() {
+            const category = document.getElementById("category").value;
+            console.log(category);
+            try {
+                const response = await fetch("/load-products");
+                if (!response.ok) {
+                    return
+                }
+                console.log(response);
+                const responseHtml = await response.text();
+                console.log(responseHtml);
+                document.getElementById("list-container").innerHTML = responseHtml
+            } catch(err) {
+                console.error(err);
+            }
+        }
+    </script>
+</html>
