@@ -1,6 +1,6 @@
 import time
 from selenium import webdriver
-from selenium.webdriver.common.by import By
+from selenium.webdriver.common.by import By, ByType
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException
 import bs4
@@ -11,7 +11,7 @@ from models import Product
 class Scrapper:
     driver: webdriver.Chrome
 
-    def __init__(self, debug=False):
+    def __init__(self, debug: bool =False):
         options = Options()
         if not debug:
             options.add_argument("--headless")
@@ -19,7 +19,7 @@ class Scrapper:
         self.driver = webdriver.Chrome(options)
         self.driver.get("https://scrapingsandbox.com/infinite-scroll")
 
-    def try_find_element(self, by: By = By.ID, value: str = ""):
+    def try_find_element(self, by: ByType = By.ID, value: str = ""):
         try:
             return self.driver.find_element(by, value)
         except NoSuchElementException:
@@ -27,8 +27,7 @@ class Scrapper:
 
     def get_all_products(self):
         self.load_all_products()
-        self.extract_products()
-        return
+        return self.extract_products()
 
     def load_all_products(self):
         while True:
@@ -47,11 +46,10 @@ class Scrapper:
         main_container = self.driver.find_element(By.CSS_SELECTOR, "main")
         main_html = main_container.get_attribute("innerHTML")
         main_soup = bs4.BeautifulSoup(main_html, "html.parser")
-        products = []
+        products: list[Product] = []
         for product_soup in main_soup.find_all(class_="product-card"):
             product = self.parse_single_product(product_soup)
             products.append(product)
-        print(products)
         return products
 
     @staticmethod

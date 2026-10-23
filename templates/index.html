@@ -6,7 +6,11 @@
         <title></title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+
     </head>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Geist:ital,wght@0,100..900;1,100..900&display=swap');
+    </style>
     <style>
         * {
             padding: 0;
@@ -14,8 +18,9 @@
         }
 
         body, html {
-            min-width: 100vh;
-            font-family: Courier New, ui-serif, system-ui, sans-serif;
+            min-height: 100vh;
+            font-family: geist, Courier New, ui-serif, system-ui, sans-serif;
+            font-size: 17px;
         }
 
         body {
@@ -27,41 +32,51 @@
             background: #3a3e41;
         }
 
+
         header {
             padding: 0.5em 1em;
-            font-weight: bold;
+            font-weight: 500;
             font-size: 17px;
             border-bottom: 1px #3a3e41 solid;
+            background: #151719;
         }
 
         main {
             margin-top: 3em;
-            padding: 0.5em 1em;
+            padding: 0.5em 1em 2em 0;
             counter-reset: line-counter;
         }
 
         .line {
             display: flex;
             line-height: 2.5rem;
-            font-size: 1.3rem;
+            font-size: 17px;
+            padding: 0 1em;
         }
 
         .line::before {
             counter-increment: line-counter;
             content: counter(line-counter);
             min-width: 2.5rem;
-            font-weight: bold;
+            font-weight: normal;
             color: #e5f2ff78;
+            font-size: 17px;
+        }
+
+        .line:hover {
+            background-color: #ddf2fd1c;
         }
 
         .line h3 {
             color: #e5f2ff78;
+            font-weight: normal;
+            font-size: 17px;
         }
 
         .line .white {
             color: white;
         }
-    
+
         .line a {
             color: orange;
         }
@@ -86,25 +101,54 @@
         .send-btn:hover {
             color: orange;
         }
+
+        *::selection {
+            color: white;
+            background-color: #e5f2ff78;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            padding: 0 0.2em;
+            font-weight: 300;
+            border-top: 1px #3a3e41 solid;
+            display: flex;
+            justify-content: space-between;
+            box-sizing: border-box;
+            background-color: black;
+
+            span {
+                padding: 0 0.2em;
+            }
+        }
     </style>
     <body>
         <header>trash_scrape.py</header>
         <main>
             <div class="line">
-                <h3># A Scrapper of 
+                <h3>python3 trash_scrape.py --cli</h3>
+            </div>
+            <div class="line">
+                <h3># a scrapper of 
                     <a target="_blank" href="https://scrapingsandbox.com/">https://scrapingsandbox.com/</a>
                 </h3>
             </div>
             <div class="line">
-                <h3># Search for Products</h3>
+                <h3># search for products</h3>
             </div>
             <div class="line">
-                <h3 class="white">Category: </h3>
+                <h3 class="white">category: </h3>
             </div>
             <div class="line">
                 <form>
                     <select id="category">
-                        <option>All Categories</option>
+                        <option value="">All Categories</option>
                         {% for cat in categories %}
                             <option value="{{ cat }}">{{ cat }}</option>
                         {% endfor %}
@@ -118,6 +162,14 @@
             </div>
             <div id="list-container"></div>
         </main>
+        <footer>
+            <div>
+                <span> [upcs-0] </span> <span> 1:scrapper* </span> <span> 2:impreza </span>
+            </div>
+            <div>
+                <span>"trash_scrape.py"</span> <span id="time-span">18:18</span>
+            </div>
+        </footer>
     </body>
     <script>
         function animateRet () {
@@ -133,9 +185,8 @@
 
         async function loadEquipments() {
             const category = document.getElementById("category").value;
-            console.log(category);
             try {
-                const response = await fetch("/load-products");
+                const response = await fetch(`/load-products?category=${category}`);
                 if (!response.ok) {
                     return
                 }
@@ -147,5 +198,14 @@
                 console.error(err);
             }
         }
+
+        function updateTime() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const timeSpan = document.getElementById("time-span").innerText = `${hours}:${minutes}`
+        }
+        setInterval(updateTime, 500);
+        updateTime();
     </script>
 </html>

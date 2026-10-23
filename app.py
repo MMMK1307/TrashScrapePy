@@ -1,7 +1,10 @@
-
 from flask import Flask, render_template, request
 
+from models import Product
+from scrapper import Scrapper
+
 app = Flask("TrashScrapePy")
+products: list[Product]
 
 
 @app.route("/", methods=["GET"])
@@ -16,14 +19,31 @@ def index():
 
 @app.route("/load-products", methods=["GET"])
 def get_products():
+    for product in products:
+        print(product)
+
+    category = request.args.get("category")
+    print(category)
+
+    if category:
+        filtered_products = [product for product in products if product.category == category]
+    else:
+        filtered_products = products
+
     data = {
-        "category": request.args.get("category")
+        "category": category,
+        "products": filtered_products
     }
+
     return render_template("product_list.html", **data)
+
 
 def main():
     app.run(debug=True)
 
 
+products = Scrapper().get_all_products()
+
 if __name__ == "__main__":
     main()
+
