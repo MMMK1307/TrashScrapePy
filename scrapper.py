@@ -10,14 +10,16 @@ from models import Product
 
 class Scrapper:
     driver: webdriver.Chrome
+    max_products: int
 
-    def __init__(self, debug: bool =False):
+    def __init__(self, debug: bool=False, max_products: int=100):
         options = Options()
         if not debug:
             options.add_argument("--headless")
             options.add_argument("--disable-gpu")
         self.driver = webdriver.Chrome(options)
         self.driver.get("https://scrapingsandbox.com/infinite-scroll")
+        self.max_products = max_products
 
     def try_find_element(self, by: ByType = By.ID, value: str = ""):
         try:
@@ -39,7 +41,7 @@ class Scrapper:
                 return
             product_elements = self.driver.find_elements(By.CSS_SELECTOR, ".product-card")
             print(len(product_elements))
-            if len(product_elements) >= 100:
+            if len(product_elements) >= self.max_products:
                 return
 
     def extract_products(self) -> list[Product]:

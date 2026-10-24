@@ -17,6 +17,14 @@
             margin: 0;
         }
 
+        a {
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
         body, html {
             min-height: 100vh;
             font-family: geist, Courier New, ui-serif, system-ui, sans-serif;
@@ -190,10 +198,8 @@
                 if (!response.ok) {
                     return
                 }
-                console.log(response);
-                const responseHtml = await response.text();
-                console.log(responseHtml);
-                document.getElementById("list-container").innerHTML = responseHtml
+                document.getElementById("list-container").innerHTML = await response.text();
+                setTimeout(updateScrollCounter, 500);
             } catch(err) {
                 console.error(err);
             }
@@ -203,9 +209,25 @@
             const now = new Date();
             const hours = now.getHours();
             const minutes = now.getMinutes();
-            const timeSpan = document.getElementById("time-span").innerText = `${hours}:${minutes}`
+            document.getElementById("time-span").innerText = `${hours}:${minutes}`
         }
         setInterval(updateTime, 500);
         updateTime();
+
+        function updateScrollCounter() {
+            const scrollContainer = document.getElementById("product-list-container");
+            if(!scrollContainer) {
+                return;
+            }
+            scrollContainer.addEventListener("scroll", () => {
+                const endSpan = document.querySelector("#less-end span");
+                let scrollPercent = Math.round(100 * scrollContainer.scrollTop / (scrollContainer.scrollHeight-scrollContainer.clientHeight));
+                if(scrollPercent === 100) {
+                    endSpan.innerText = `products.md (END)`;
+                    return
+                }
+                endSpan.innerText = `products.md (${scrollPercent}%)`;
+            })
+        }
     </script>
 </html>

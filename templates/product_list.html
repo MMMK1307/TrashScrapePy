@@ -1,39 +1,114 @@
 <style>
   #product-list-container {
-      max-height: 33vh;
+      max-height: 500px;
       max-width: 100%;
       overflow-y: scroll;
       display: flex;
       background-color: black;
+      flex-wrap: wrap;
+      justify-content: space-around;
   }
 
   .product-card {
+      border: 1px #3a3e41 solid;
+      padding: 1em;
+      border-radius: 5px;
+      width: 30%;
+  }
+
+  .linking-container {
+      display: flex;
+      justify-content: space-between;
+  }
+
+  #all-results-container {
+      display: block;
+  }
+
+  #count-container {
+      width: 100%;
+
+      p {
+          font-size: 14px;
+          color: #e5f2ff78;
+      }
+
+      .products {
+          text-align: justify;
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
+      }
+  }
+
+  #less-end {
+      background-color: black;
+      border-top: 1px #3a3e41 solid;
+  }
+
+  #less-end span{
+      background-color: white;
+      color: black;
+      padding-right: 1em;
   }
 </style>
 <div class="line">
-    <h3>less products.md</h3>
+    <h3>more ./products.md</h3>
 </div>
 <div class="line">
-    <div id="product-list-container">
-        {% for product in products %}
-            <div class="product-card">
-                <h3>{{ product.name }}</h3>
-
-                <div>{{ product.price }}</div>
+    <div id="all-results-container">
+        <div id="product-list-container">
+            <div id="count-container">
+                <p>######################################################</p>
+                <p># Total Products: {{ count.total }}</p>
+                <p># AVG Price: {{ count.avg_price }}</p>
+                <div class="products">
+                    <p># Cheapest:
+                        {% if count.lowest_price %}
+                            <a href="https://scrapingsandbox.com{{ count.lowest_price.link }}" target="_blank">
+                                {{ count.lowest_price.name }}
+                            </a>
+                            | ${{ count.lowest_price.price }}
+                        {% else %}
+                            ???
+                        {% endif %}
+                    </p>
+                    <p>Priciest:
+                        {% if count.highest_price %}
+                            <a href="https://scrapingsandbox.com{{ count.highest_price.link }}" target="_blank">
+                                {{ count.highest_price.name }}
+                            </a>
+                            | ${{ count.highest_price.price }}
+                        {% else %}
+                            ???
+                        {% endif %}
+                    </p>
+                    <p>Best Ratted:
+                        {% if count.best_ratted %}
+                            <a href="https://scrapingsandbox.com{{ count.best_ratted.link }}" target="_blank">
+                                {{ count.best_ratted.name }}
+                            </a>
+                            |   {{ count.best_ratted.rating }}
+                        {% else %}
+                            ???
+                        {% endif %}
+                    </p>
+                </div>
             </div>
-        {% endfor %}
-
-
-    name: str
-    price: float
-    rating: float
-    sku: str
-    vendor: str
-    category: str
-    in_stock: bool
-    link: str
-        <div>
-            asldfk
+            {% for product in products %}
+                <div class="product-card">
+                    <h3>{{ product.name }} | {{ product.category }}</h3>
+                    <div>${{ product.price }}</div>
+                    <div class="linking-container">
+                        <a href="https://scrapingsandbox.com{{ product.link }}" target="_blank">Visit Product Page</a>
+                        <small>{{ product.rating }} *</small>
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="product-card" style="border: none"></div>
+            <div class="product-card" style="border: none"></div>
+        </div>
+        <div id="less-end">
+            <span>products.md (0%)</span>
         </div>
     </div>
 </div>

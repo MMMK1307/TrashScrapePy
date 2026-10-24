@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 
-from models import Product
+from models import Product, ProductCounting
 from scrapper import Scrapper
 
 app = Flask("TrashScrapePy")
@@ -32,7 +32,8 @@ def get_products():
 
     data = {
         "category": category,
-        "products": filtered_products
+        "products": filtered_products,
+        "count": ProductCounting.perform_count(filtered_products),
     }
 
     return render_template("product_list.html", **data)
@@ -42,7 +43,10 @@ def main():
     app.run(debug=True)
 
 
-products = Scrapper().get_all_products()
+products = Scrapper(
+    # debug=True,
+    max_products=1000,
+).get_all_products()
 
 if __name__ == "__main__":
     main()
