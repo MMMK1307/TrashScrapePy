@@ -192,7 +192,7 @@
         animateRet();
 
         async function loadEquipments() {
-            const category = document.getElementById("category").value;
+            const category = encodeURIComponent(document.getElementById("category").value);
             try {
                 const response = await fetch(`/load-products?category=${category}`);
                 if (!response.ok) {

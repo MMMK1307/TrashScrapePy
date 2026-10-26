@@ -19,11 +19,7 @@ def index():
 
 @app.route("/load-products", methods=["GET"])
 def get_products():
-    for product in products:
-        print(product)
-
     category = request.args.get("category")
-    print(category)
 
     if category:
         filtered_products = [product for product in products if product.category == category]
@@ -43,10 +39,13 @@ def main():
     app.run(debug=True)
 
 
-products = Scrapper(
+scrapper = Scrapper(
     # debug=True,
     max_products=1000,
-).get_all_products()
+)
+products = scrapper.get_all_products()
+scrapper.close()
+
 
 if __name__ == "__main__":
     main()
