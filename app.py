@@ -36,15 +36,15 @@ def get_products():
 
 
 def main():
-    app.run(debug=True)
+    app.run(debug=True, port=8000)
 
 
 scrapper = Scrapper(
     # debug=True,
-    max_products=1000,
+    max_products=100,
 )
 products = scrapper.get_all_products()
-scrapper.close()
+# products = scrapper.get_all_products_alt()
 
 
 if __name__ == "__main__":
